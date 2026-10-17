@@ -19,10 +19,12 @@ For more details, see ["GitHub token" section in README.md](https://github.com/l
 
 ## Too Many Open Files
 
+<!-- <block name="concurrency-doc" same-as="lychee-bin/src/config/mod.rs:default-max-concurrency" same-as-pattern="(?P<value>\d+) by default"> -->
 The number of concurrent network requests (`MAX_CONCURRENCY`) is set to 128 by default.
 Every network request maps to an open socket, which is represented as a file on UNIX systems.
 If you see error messages like "error trying to connect: tcp open error: Too
 many open files (os error 24)" then you ran out of file handles.
+<!-- </block> -->
 
 You have two options:
 

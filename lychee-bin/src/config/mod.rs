@@ -114,6 +114,8 @@ impl From<FragmentMode> for FragmentCheckerOptions {
 #[derive(Parser, Debug)]
 #[command(version, about, next_display_order = None)]
 pub(crate) struct LycheeOptions {
+    // lychee avoids clap's `default_value` and `long_help`.
+    // <block name="cli-options" line-pattern-forbidden='\b(default_value\w*|long_help)\s*='>
     /// Inputs for link checking (where to get links to check from).
     /// These can be: files (e.g. `README.md`), file globs (e.g. `'~/git/*/README.md'`),
     /// remote URLs (e.g. `https://example.com/README.md`), or standard input (`-`).
@@ -135,6 +137,7 @@ pub(crate) struct LycheeOptions {
 
     #[clap(flatten)]
     pub(crate) config: Config,
+    // </block>
 }
 
 impl LycheeOptions {
@@ -187,6 +190,8 @@ where
 #[derive(Parser, Debug, Deserialize, Clone, Default, JsonSchema)]
 #[serde(deny_unknown_fields)]
 pub(crate) struct Config {
+    // Same clap conventions as in `LycheeOptions` above.
+    // <block name="cli-config" line-pattern-forbidden='\b(default_value\w*|long_help)\s*='>
     /// Read input filenames from the given file or stdin (if path is '-').
     ///
     /// This is useful when you have a large number of inputs that would be
@@ -743,6 +748,7 @@ pub(crate) struct Config {
     #[serde(default)]
     #[schemars(with = "std::collections::HashMap<String, schema::HostConfig>")]
     pub(crate) hosts: HostConfigs,
+    // </block>
 }
 
 impl Config {
@@ -823,7 +829,9 @@ impl Config {
 
     /// Maximum number of concurrent network requests
     pub(crate) fn max_concurrency(&self) -> NonZeroUsize {
+        // <block name="default-max-concurrency" same-as="docs/TROUBLESHOOTING.md:concurrency-doc" same-as-pattern="\((?P<value>\d+)\)">
         const DEFAULT_MAX_CONCURRENCY: NonZeroUsize = NonZeroUsize::new(128).unwrap();
+        // </block>
         self.max_concurrency.unwrap_or(DEFAULT_MAX_CONCURRENCY)
     }
 
@@ -1059,34 +1067,6 @@ mod tests {
     use regex::Regex;
 
     use super::*;
-
-    #[test]
-    fn test_no_clap_default_used() {
-        if Regex::new(r"(?ms)#\[arg\([^\]]*default_value")
-            .unwrap()
-            .is_match(&read_this_source_file())
-        {
-            panic!(
-                r"In lychee, we avoid clap's default values.
-Write a getter function instead, keep the field private and annotate the default value in the doc comment manually.
-The annotated default value is then verified with a test."
-            );
-        }
-    }
-
-    #[test]
-    fn test_no_clap_long_help_used() {
-        if Regex::new(r"(?ms)#\[arg\([^\]]*long_help")
-            .unwrap()
-            .is_match(&read_this_source_file())
-        {
-            panic!(
-                r"In lychee, we avoid clap's long_help.
-Instead use Rust's doc comments in combination with `verbatim_doc_comment`.
-This convention also simplifies our default value testing."
-            );
-        }
-    }
 
     #[test]
     fn test_default_values() {
