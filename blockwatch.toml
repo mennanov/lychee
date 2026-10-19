@@ -1,0 +1,65 @@
+# Project-wide settings and declarative synchronization rules for https://github.com/mennanov/blockwatch
+
+# Fixtures are link-checker test data, not project docs. They can hold arbitrary
+# markup that must never be read as blockwatch rules.
+ignore = [
+    "fixtures/**",
+]
+
+# Workspace version synchronization across packages, manifests, and documentation.
+# This block defines a source of truth for the current package version.
+[[block]]
+target = "Cargo.toml#/workspace/package/version"
+name = "workspace-version"
+
+[[block]]
+target = "lychee-bin/Cargo.toml#/dependencies/lychee-lib/version"
+same-as = "Cargo.toml:workspace-version"
+
+[[block]]
+target = ".pre-commit-hooks.yaml#/~[id=lychee-docker]/entry"
+same-as = "Cargo.toml:workspace-version"
+same-as-pattern = ':(?P<value>.+)'
+
+# MSRV (Minimum Supported Rust Version) synchronization across workspace crates.
+# All crates must promise the same MSRV. lychee-lib, the published library, is the
+# reference the others are compared against.
+[[block]]
+target = "lychee-bin/Cargo.toml#/package/rust-version"
+same-as = "lychee-lib/Cargo.toml#/package/rust-version"
+
+[[block]]
+target = "test-utils/Cargo.toml#/package/rust-version"
+same-as = "lychee-lib/Cargo.toml#/package/rust-version"
+
+# Exit codes synchronization (README vs generated man page).
+[[block]]
+target = "README.md#/Commandline usage/Exit codes"
+name = "readme-exit-codes"
+same-as = "lychee-bin/src/commands/generate.rs:generate-exit-codes"
+
+[[block]]
+target = "lychee-bin/src/commands/generate.rs"
+target-pattern = 'EXIT_CODE_SECTION: &str = "(?P<value>[^"]*)"'
+name = "generate-exit-codes"
+same-as = "README.md:readme-exit-codes"
+
+[[block]]
+target = "README.md"
+target-pattern = '(?s)### Exit codes\n(?P<value>.*?)\n### '
+name = "readme-exit-code-numbers"
+same-as = "lychee-bin/src/main.rs:exit-codes"
+same-as-pattern = '^(?P<value>\d+)'
+
+# Per-host rate-limit defaults are documented in lychee-bin but defined in lychee-lib.
+[[block]]
+target = "lychee-bin/src/config/mod.rs"
+target-pattern = 'per host \(default: (?P<value>\d+)\)'
+name = "host-concurrency-doc"
+same-as = "lychee-lib/src/ratelimit/config.rs:default-host-concurrency"
+
+[[block]]
+target = "lychee-bin/src/config/mod.rs"
+target-pattern = 'same host \(default: (?P<value>\d+)ms\)'
+name = "host-request-interval-doc"
+same-as = "lychee-lib/src/ratelimit/config.rs:default-request-interval"

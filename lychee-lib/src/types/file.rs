@@ -128,6 +128,7 @@ impl std::str::FromStr for FileExtensions {
 
 /// `FileType` defines which file types lychee can handle
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash, Deserialize, Serialize, Default)]
+// <block name="file-types" same-as="README.md:supported-file-formats" same-as-format="flat" same-as-pattern="File in (?P<value>\w+)">
 pub enum FileType {
     /// File in HTML format
     Html,
@@ -141,6 +142,7 @@ pub enum FileType {
     #[default]
     Plaintext,
 }
+// </block>
 
 impl std::fmt::Display for FileType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

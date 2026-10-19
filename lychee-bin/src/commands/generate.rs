@@ -187,7 +187,7 @@ fn render_section(title: &str, content: &str, buffer: &mut Vec<u8>) -> Result<()
 mod tests {
     use super::{config_schema, man_page};
     use crate::config::Config;
-    use crate::generate::{CONTRIBUTOR_THANK_NOTE, EXIT_CODE_SECTION};
+    use crate::generate::CONTRIBUTOR_THANK_NOTE;
     use anyhow::{Result, bail};
     use serde_json::{Value, json};
 
@@ -478,35 +478,5 @@ headers = { Accept = "text/html" }
         // Once in SYNOPSIS and once in OPTIONS.
         assert_eq!(roff.matches("\\-\\-version").count(), 2);
         Ok(())
-    }
-
-    /// Test that the Exit Codes section in `README.md` is up to date with
-    /// lychee's manual page.
-    #[test]
-    #[cfg(unix)]
-    fn test_readme_exit_codes_up_to_date() -> Result<(), Box<dyn std::error::Error>> {
-        use test_utils::load_readme_text;
-
-        const BEGIN: &str = "### Exit codes";
-        const END: &str = "# ";
-
-        let readme = load_readme_text!();
-        let start = readme.find(BEGIN).ok_or("Beginning not found in README")? + BEGIN.len();
-        let end = readme[start..].find(END).ok_or("End not found in README")? - END.len();
-
-        let section = &readme[start..start + end];
-        assert_eq!(
-            filter_empty_lines(section),
-            filter_empty_lines(EXIT_CODE_SECTION)
-        );
-
-        Ok(())
-    }
-
-    fn filter_empty_lines(s: &str) -> String {
-        s.lines()
-            .filter(|line| !line.trim().is_empty())
-            .collect::<Vec<_>>()
-            .join("\n")
     }
 }

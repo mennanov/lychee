@@ -1,10 +1,14 @@
 [files]
 extend-exclude = [
+    # Keep these sorted and unique. They are for fixtures and generated assets only:
+    # excluding a source directory would silently switch off the typo check for real code.
+    # <block keep-sorted keep-sorted-pattern='^"(?P<value>[^"]+)"' keep-unique line-pattern-forbidden='^"(src|lychee-(bin|lib)/src)'>
     "assets/screencast.svg",
     "fixtures/bench",
-    "fixtures/text_fragments/index.html",
-    "fixtures/fragments/special-casing.md",
     "fixtures/fragments/special-casing.html",
+    "fixtures/fragments/special-casing.md",
+    "fixtures/text_fragments/index.html",
+    # </block>
 ]
 
 [default.extend-words]

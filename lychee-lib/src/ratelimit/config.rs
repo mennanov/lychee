@@ -8,10 +8,14 @@ use crate::StatusCodeSelector;
 use crate::ratelimit::HostKey;
 
 /// Default number of concurrent requests per host
+// <block name="default-host-concurrency" same-as="lychee-bin/src/config/mod.rs:host-concurrency-doc" same-as-pattern="= (?P<value>\d+)">
 const DEFAULT_CONCURRENCY: usize = 10;
+// </block>
 
 /// Default interval between requests to the same host
+// <block name="default-request-interval" same-as="lychee-bin/src/config/mod.rs:host-request-interval-doc" same-as-pattern="\((?P<value>\d+)\)">
 const DEFAULT_REQUEST_INTERVAL: Duration = Duration::from_millis(50);
+// </block>
 
 /// Global rate limiting configuration that applies as defaults to all hosts
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]

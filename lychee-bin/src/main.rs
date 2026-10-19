@@ -100,6 +100,7 @@ use crate::{
 
 /// A C-like enum that can be cast to `i32` and used as process exit code.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+// <block name="exit-codes" same-as-pattern="= (?P<value>\d+)">
 enum ExitCode {
     Success = 0,
     // NOTE: exit code 1 is used for any `Result::Err` bubbled up to `main()`
@@ -111,6 +112,7 @@ enum ExitCode {
     LinkCheckFailure = 2,
     ConfigFile = 3,
 }
+// </block>
 
 /// Ignore lines starting with this marker in `.lycheeignore` files
 const LYCHEEIGNORE_COMMENT_MARKER: &str = "#";
